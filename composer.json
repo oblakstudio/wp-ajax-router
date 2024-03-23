@@ -1,6 +1,6 @@
 {
   "name": "x-wp/ajax-router",
-  "description": "Simplifies the use of WordPress hooks by allowing you to use simple dependency injection.",
+  "description": "Simplifies the use of WordPress AJAX by providing NestJS inspired Controller design.",
   "authors": [
     {
       "name": "Sibin Grasic",
