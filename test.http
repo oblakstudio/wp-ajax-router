@@ -1,0 +1,20 @@
+POST https://sandbox.ddev.site/wp-ajax/test/v2/post-test HTTP/1.1
+Content-Type: application/json
+WP-Nonce: c343c04b55
+
+{
+  "nonce": "\\'d",
+  "name": "John Doe",
+  "email": "test@john.com"
+}
+###
+
+POST https://sandbox.ddev.site/wp-admin/admin-ajax.php?action=test_ajax_call HTTP/1.1
+Content-Type: application/json
+
+{
+"action": "\\\test_ajax_call",
+"name": "sample",
+"time": "Wed, 21 Oct 2015 18:27:50 GMT"
+}
+###

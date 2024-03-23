@@ -1,0 +1,11 @@
+.github export-ignore
+.vscode export-ignore
+docs export-ignore
+.codeclimate.yml export-ignore
+.editorconfig export-ignore
+.gitattributes export-ignore
+.releaserc export-ignore
+composer.lock export-ignore
+CONTRIBUTING.md export-ignore
+phpcs.xml export-ignore
+test.htt

@@ -1,0 +1,43 @@
+{
+  "name": "x-wp/ajax-router",
+  "description": "Simplifies the use of WordPress hooks by allowing you to use simple dependency injection.",
+  "authors": [
+    {
+      "name": "Sibin Grasic",
+      "email": "sibin.grasic@oblak.studio"
+    }
+  ],
+  "license": "GPL-2.0-only",
+  "type": "library",
+  "require": {
+    "php": ">= 8.1",
+    "automattic/jetpack-constants": "^2.0",
+    "oblak/wp-hook-di": "^1.2",
+    "oblak/wp-polyfills": "^1.0",
+    "sunrise/http-message": "^3",
+    "sunrise/http-router": "^2.16"
+  },
+  "require-dev": {
+    "oblak/wordpress-coding-standard": "^1"
+  },
+  "suggest": {
+    "automattic/jetpack-autoloader": "Allow for better interoperability with other plugins that use this package."
+  },
+  "autoload": {
+    "psr-4": {
+      "XWP\\": "src"
+    },
+    "files": [
+      "src/Utils/xwp-ajax-fns.php"
+    ]
+  },
+  "config": {
+    "classmap-authoritative": true,
+    "optimize-autoloader": true,
+    "sort-packages": true,
+    "allow-plugins": {
+      "dealerdirect/phpcodesniffer-composer-installer": true,
+      "ergebnis/composer-normalize": true
+    }
+  }
+}

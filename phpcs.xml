@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<ruleset name="WordPress Module">
+	<config name="minimum_supported_wp_version" value="6.4"/>
+  <config name="testVersion" value="8.1-"/>
+
+  <rule ref="Oblak"/>
+  <rule ref="Oblak-Advanced"/>
+
+  <file>src/</file>
+</ruleset>

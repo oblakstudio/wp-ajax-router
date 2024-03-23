@@ -1,0 +1,39 @@
+{
+  "branches": [
+    "master",
+    {
+      "name": "develop",
+      "prerelease": true
+    },
+    {
+      "name": "alpha",
+      "prerelease": true
+    },
+    {
+      "name": "beta",
+      "prerelease": true
+    }
+  ],
+  "plugins": [
+    "@semantic-release/commit-analyzer",
+    "@semantic-release/release-notes-generator",
+    [
+      "@semantic-release/exec",
+      {
+        "prepareCmd": "zip -r '/tmp/release.zip' composer.json README.md src"
+      }
+    ],
+    [
+      "@semantic-release/github",
+      {
+        "assets": [
+          {
+            "path": "/tmp/release.zip",
+            "name": "wp-ajax-router-${nextRelease.version}.zip",
+            "label": "WP Ajax Router v${nextRelease.version}"
+          }
+        ]
+      }
+    ]
+  ]
+}
