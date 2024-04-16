@@ -12,10 +12,10 @@
   "require": {
     "php": ">= 8.1",
     "automattic/jetpack-constants": "^2.0",
-    "oblak/wp-hook-di": "^1.2",
     "oblak/wp-polyfills": "^1.0",
     "sunrise/http-message": "^3",
-    "sunrise/http-router": "^2.16"
+    "sunrise/http-router": "^2.16",
+    "x-wp/hook-invoker": "^1.0@alpha"
   },
   "require-dev": {
     "oblak/wordpress-coding-standard": "^1"
@@ -31,6 +31,8 @@
       "src/Utils/xwp-ajax-fns.php"
     ]
   },
+  "minimum-stability": "alpha",
+  "prefer-stable": true,
   "config": {
     "classmap-authoritative": true,
     "optimize-autoloader": true,

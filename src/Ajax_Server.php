@@ -7,11 +7,11 @@
 
 namespace XWP;
 
-use Oblak\WP\Decorators\Action;
-use Oblak\WP\Decorators\Filter;
-use Oblak\WP\Traits\Accessible_Hook_Methods;
-use Oblak\WP\Traits\Hook_Processor_Trait;
 use Oblak\WP\Traits\Singleton;
+use XWP\Contracts\Hook\Accessible_Hook_Methods;
+use XWP\Hook\Decorators\Action;
+use XWP\Hook\Decorators\Filter;
+use XWP\Hook\Invoker;
 
 /**
  * Ajax server.
@@ -19,7 +19,6 @@ use Oblak\WP\Traits\Singleton;
 class Ajax_Server {
     use Singleton;
     use Accessible_Hook_Methods;
-    use Hook_Processor_Trait;
 
     /**
      * The base for the ajax requests.
@@ -33,29 +32,15 @@ class Ajax_Server {
      */
     protected function __construct() {
         $this->base = \get_option( 'xwp_ajax_slug', 'wp-ajax' );
-        $this->init( 'plugins_loaded', PHP_INT_MAX );
-    }
-
-    /**
-     * Runs the registered hooks for the plugin.
-     */
-    public function run_hooks() {
-        \xwp_invoke_hooked_methods( $this );
-    }
-
-    /**
-     * Get the dependencies for the module.
-     *
-     * @return array
-     */
-    protected function get_dependencies(): array {
-        return array( HTTP\Request_Dispatcher::class );
+        Invoker::instance()
+            ->load_handler( $this )
+            ->register_handler( HTTP\Request_Dispatcher::class );
     }
 
     /**
      * Add the admin settings for the module.
      */
-    #[Action( 'admin_init' )]
+    #[Action( tag:'admin_init', context: Action::CTX_ADMIN )]
     protected function add_admin_settings() {
         \add_settings_field( 'xwp_ajax_slug', 'XWP AJAX base', $this->field( ... ), 'permalink', 'optional' );
     }
@@ -78,7 +63,7 @@ class Ajax_Server {
     /**
      * Save the admin settings for the module.
      */
-    #[Action( 'admin_init' )]
+    #[Action( tag: 'init', context: Action::CTX_ADMIN )]
     protected function save_admin_settings() {
         if ( ! isset( $_POST['permalink_structure'], $_POST['xwp_ajax_slug'] ) || ! \is_admin() ) {
             return;
@@ -96,7 +81,7 @@ class Ajax_Server {
      * @param  array $vars The existing query vars.
      * @return array
      */
-    #[Filter( 'query_vars' )]
+    #[Filter( tag: 'query_vars' )]
     protected function add_query_vars( array $vars ): array {
         return \array_merge( $vars, array( 'xwp_ajax' ) );
     }
@@ -107,7 +92,7 @@ class Ajax_Server {
      * @param  array $rules The existing rewrite rules.
      * @return array        The modified rewrite rules.
      */
-    #[Filter( 'rewrite_rules_array', 120 )]
+    #[Filter( tag: 'rewrite_rules_array', priority: 120 )]
     protected function add_rewrites( array $rules ) {
         $addon_rules = array(
             $this->base . '/([^/]+)/([^/]+)/?(.*)?' => 'index.php?xwp_ajax=1',
@@ -121,8 +106,8 @@ class Ajax_Server {
     /**
      * Add the ajax vars to the head.
      */
-    #[Action( 'wp_head', PHP_INT_MAX )]
-    #[Action( 'admin_head', PHP_INT_MAX )]
+    #[Action( tag: 'wp_head', priority: PHP_INT_MAX, context: Action::CTX_FRONTEND )]
+    #[Action( tag: 'admin_head', priority: PHP_INT_MAX, context: Action::CTX_ADMIN )]
     protected function add_ajax_vars() {
         $add_vars = \apply_filters( 'xwp_ajax_vars', true );
         if ( ! \has_filter( 'xwp_ajax_controllers' ) || ! $add_vars ) {

@@ -12,6 +12,7 @@ use Psr\Http\Server\MiddlewareInterface;
 use Sunrise\Http\Router\RouteCollector;
 use XWP\Decorator\HTTP\Field;
 use XWP\Decorator\HTTP\Method;
+use XWP\Hook\Reflection;
 use XWP\HTTP\Response_Handler;
 use XWP\Interfaces\Response_Handler as RHI;
 use XWP\Interfaces\Response_Modifier;
@@ -103,7 +104,7 @@ class Controller {
 
         $mw = \array_map(
             static fn( $dt ) => new $dt(
-                ...\xwp_get_hook_decorators(
+                ...Reflection::get_decorators(
                     $r ?? $this->reflector,
                     $dt::DECORATOR_CLASS,
                 ) ?: array(),
@@ -121,8 +122,8 @@ class Controller {
      */
     public function get_routes(): \Generator {
         foreach ( $this->reflector->getMethods() as $method ) {
-            $req_method = \current( \xwp_get_hook_decorators( $method, Method::class ) );
-
+            $req_method = Reflection::get_decorator( $method, Method::class );
+            $path       = '' === $req_method->path ? '' : "/{$req_method->path}";
             yield array(
                 'attributes'     => array(
                     '@Method' => $method,
@@ -130,9 +131,9 @@ class Controller {
                 ),
                 'methods'        => $req_method->method->format(),
                 'requestHandler' => $this->handle( ... ),
-                'middlewares'    => $this->get_middlewares( $method ),
+                'middlewares'    => $this->load_middlewares( $method ),
                 'name'           => "{$this->reflector->getName()}::{$method->getName()}",
-                'path'           => "/{$req_method->path}",
+                'path'           => $path,
             );
         }
     }
