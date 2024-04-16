@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "ac9d2f27b1c76e1c551ba07d2dcab444",
+    "content-hash": "8e79945034cdc2d4e2a7a70e7dcee1b3",
     "packages": [
         {
             "name": "automattic/jetpack-constants",
@@ -112,59 +112,6 @@
                 "source": "https://github.com/php-fig/http-message-util/tree/1.1.5"
             },
             "time": "2020-11-24T22:02:12+00:00"
-        },
-        {
-            "name": "oblak/wp-hook-di",
-            "version": "v1.2.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/oblakstudio/wp-hook-di.git",
-                "reference": "6cf1f7a9bc4150a18c23b2336aa00e9d0e6f6826"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/oblakstudio/wp-hook-di/zipball/6cf1f7a9bc4150a18c23b2336aa00e9d0e6f6826",
-                "reference": "6cf1f7a9bc4150a18c23b2336aa00e9d0e6f6826",
-                "shasum": ""
-            },
-            "require": {
-                "automattic/jetpack-constants": "^2.0",
-                "oblak/wp-polyfills": "^1.0",
-                "php": ">= 8.0"
-            },
-            "require-dev": {
-                "oblak/wordpress-coding-standard": "^1"
-            },
-            "suggest": {
-                "automattic/jetpack-autoloader": "Allow for better interoperability with other plugins that use this package.",
-                "oblak/composer-wp-di-finder-plugin": "Automatically find Hookable classes"
-            },
-            "type": "library",
-            "autoload": {
-                "files": [
-                    "src/Utils/oblak-wp-metadata-utils.php",
-                    "src/Utils/oblak-wp-hook-utils.php"
-                ],
-                "psr-4": {
-                    "Oblak\\WP\\": "src"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "GPL-2.0-only"
-            ],
-            "authors": [
-                {
-                    "name": "Sibin Grasic",
-                    "email": "sibin.grasic@oblak.studio"
-                }
-            ],
-            "description": "Simplifies the use of WordPress hooks by allowing you to use simple dependency injection.",
-            "support": {
-                "issues": "https://github.com/oblakstudio/wp-hook-di/issues",
-                "source": "https://github.com/oblakstudio/wp-hook-di/tree/v1.2.0"
-            },
-            "time": "2024-03-16T04:31:43+00:00"
         },
         {
             "name": "oblak/wp-polyfills",
@@ -727,6 +674,118 @@
                 }
             ],
             "time": "2023-01-01T22:28:23+00:00"
+        },
+        {
+            "name": "x-wp/hook-contracts",
+            "version": "v1.0.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/x-wp/hook-contracts.git",
+                "reference": "ece4d6c133a6c70b1bd8762f27a7744fc88e4671"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/x-wp/hook-contracts/zipball/ece4d6c133a6c70b1bd8762f27a7744fc88e4671",
+                "reference": "ece4d6c133a6c70b1bd8762f27a7744fc88e4671",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=8.1"
+            },
+            "suggest": {
+                "automattic/jetpack-autoloader": "Allow for better interoperability with other plugins that use this package."
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "XWP\\Contracts\\Hook\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "GPL-2.0-only"
+            ],
+            "authors": [
+                {
+                    "name": "Sibin Grasic",
+                    "email": "sibin.grasic@oblak.studio"
+                }
+            ],
+            "description": "Generic abstraction related to xWP hooks",
+            "keywords": [
+                "HOOK",
+                "abstractions",
+                "contracts",
+                "decoupling",
+                "extended-wp",
+                "interfaces",
+                "interoperability",
+                "standards"
+            ],
+            "support": {
+                "issues": "https://github.com/x-wp/hook-contracts/issues",
+                "source": "https://github.com/x-wp/hook-contracts/tree/v1.0.2"
+            },
+            "time": "2024-03-31T23:15:56+00:00"
+        },
+        {
+            "name": "x-wp/hook-invoker",
+            "version": "v1.0.0-alpha.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/x-wp/hook-invoker.git",
+                "reference": "2c6388f907b36dcf1fcf60705dd79e4042689f88"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/x-wp/hook-invoker/zipball/2c6388f907b36dcf1fcf60705dd79e4042689f88",
+                "reference": "2c6388f907b36dcf1fcf60705dd79e4042689f88",
+                "shasum": ""
+            },
+            "require": {
+                "automattic/jetpack-constants": "^2.0",
+                "php": ">=8.1",
+                "x-wp/hook-contracts": "^1"
+            },
+            "provide": {
+                "x-wp/hook-implementation": "1.0.0"
+            },
+            "require-dev": {
+                "oblak/wordpress-coding-standard": "^1"
+            },
+            "suggest": {
+                "automattic/jetpack-autoloader": "Allow for better interoperability with other plugins that use this package."
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "XWP\\Hook\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "GPL-2.0-only"
+            ],
+            "authors": [
+                {
+                    "name": "Sibin Grasic",
+                    "email": "sibin.grasic@oblak.studio"
+                }
+            ],
+            "description": "Provides standardized way to declare and invoke WordPress hooks",
+            "keywords": [
+                "actions",
+                "extended-wp",
+                "filters",
+                "hook-manager",
+                "hooks",
+                "wordpress"
+            ],
+            "support": {
+                "issues": "https://github.com/x-wp/hook-manager/issues",
+                "source": "https://github.com/x-wp/hook-invoker/tree/v1.0.0-alpha.1"
+            },
+            "time": "2024-04-01T03:11:10+00:00"
         }
     ],
     "packages-dev": [
@@ -1432,9 +1491,11 @@
         }
     ],
     "aliases": [],
-    "minimum-stability": "stable",
-    "stability-flags": [],
-    "prefer-stable": false,
+    "minimum-stability": "alpha",
+    "stability-flags": {
+        "x-wp/hook-invoker": 15
+    },
+    "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
         "php": ">= 8.1"

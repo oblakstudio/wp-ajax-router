@@ -7,23 +7,26 @@
 
 namespace XWP\HTTP;
 
-use Oblak\WP\Decorators\Action;
-use Oblak\WP\Decorators\Filter;
-use Oblak\WP\Decorators\Hookable;
-use Oblak\WP\Traits\Accessible_Hook_Methods;
 use Sunrise\Http\Message\ServerRequestFactory;
 use Sunrise\Http\Router\Middleware\JsonPayloadDecodingMiddleware;
 use Sunrise\Http\Router\RouteCollector;
 use Sunrise\Http\Router\Router;
+use XWP\Contracts\Hook\Accessible_Hook_Methods;
+use XWP\Contracts\Hook\Initialize;
 use XWP\Decorator\Core\Controller;
 use XWP\Filter\Exception_Filter;
+use XWP\Hook\Context_Host;
+use XWP\Hook\Decorators\Action;
+use XWP\Hook\Decorators\Filter;
+use XWP\Hook\Decorators\Handler;
+use XWP\Hook\Reflection;
 
 use function Sunrise\Http\Router\emit;
 
 /**
  * Adds the ability to route requests to the appropriate controller.
  */
-#[Hookable( hook: 'parse_request', conditional: 'xwp_is_doing_ajax' )]
+#[Handler( tag: 'parse_request', priority: 0 )]
 class Request_Dispatcher {
     use Accessible_Hook_Methods;
 
@@ -32,7 +35,7 @@ class Request_Dispatcher {
      *
      * @var array<Controller>
      */
-    protected readonly array $controllers;
+    protected array $controllers;
 
     /**
      * The router instance.
@@ -48,6 +51,10 @@ class Request_Dispatcher {
      */
     protected readonly string $base;
 
+    public static function can_initialize() {
+        return $GLOBALS['wp']->query_vars['xwp_ajax'] ?? false;
+    }
+
     /**
      * Constructor
      */
@@ -56,19 +63,16 @@ class Request_Dispatcher {
         ! \defined( 'WP_ADMIN' ) && \define( 'WP_ADMIN', true );
         ! \defined( 'XWP_AJAX' ) && \define( 'XWP_AJAX', true );
 
-        \xwp_invoke_hooked_methods( $this );
-
-        $this->base        = '/' . \get_option( 'xwp_ajax_slug', 'wp-ajax' );
-        $this->router      = new Router();
-        $this->controllers = $this->get_controllers();
+        $this->base   = '/' . \get_option( 'xwp_ajax_slug', 'wp-ajax' );
+        $this->router = new Router();
+        // $this->controllers = $this->get_controllers();
     }
 
     /**
      * Get the controllers that will be used to handle ajax requests.
-     *
-     * @return array<Controller>
      */
-    final protected function get_controllers(): array {
+    #[Action( tag: 'parse_request', priority: 10 )]
+    final protected function get_controllers() {
         /**
          * Filters the controllers that will be used to handle ajax requests.
          *
@@ -77,7 +81,7 @@ class Request_Dispatcher {
          *
          * @var array<Controller> $controllers
          */
-        return \apply_filters( 'xwp_ajax_controllers', array(), $this );
+        $this->controllers = \apply_filters( 'xwp_ajax_controllers', array(), $this );
     }
 
     /**
@@ -86,12 +90,18 @@ class Request_Dispatcher {
      * @param  array $ctrs The controllers to remap.
      * @return array
      */
-    #[Filter( 'xwp_ajax_controllers', 'PHP_INT_MAX' )]
+    #[Filter( tag: 'xwp_ajax_controllers', priority: PHP_INT_MAX )]
     protected function remap_controllers( array $ctrs ): array {
-        foreach ( $ctrs as $i => $ctr ) {
-            $ctr        = new \ReflectionClass( $ctr );
-            $ctrs[ $i ] = \current( \xwp_get_hook_decorators( $ctr, Controller::class ) )?->set_handler( $ctr );
-        }
+        $reflectors = \array_map( static fn( $ctr ) => new \ReflectionClass( $ctr ), $ctrs );
+
+        $ctrs = \array_map(
+            static fn( $ctr, $rfl ) => Reflection::get_decorator(
+                $ctr,
+                Controller::class,
+            )->set_handler( $rfl ),
+            $ctrs,
+            $reflectors,
+        );
 
         return \array_filter( $ctrs );
     }
@@ -99,12 +109,15 @@ class Request_Dispatcher {
     /**
      * Route the request to the appropriate controller.
      */
-    #[Action( 'parse_request', 11 )]
+    #[Action( tag: 'parse_request', priority: 11 )]
     protected function route() {
         $collector = new RouteCollector();
 
         $this->router->addMiddleware( new Exception_Filter() );
         $this->router->addMiddleware( new JsonPayloadDecodingMiddleware() );
+
+        // \dump( $this->controllers );
+        // die;
 
         foreach ( $this->controllers as $ctr ) {
             $this->router->addRoute(

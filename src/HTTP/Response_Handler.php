@@ -11,13 +11,13 @@ use Oblak\WP\Traits\Singleton;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Sunrise\Http\Message\Response;
-use XWP\Interfaces\Response_Handler as Response_Handler_Interface;
+use XWP\Interfaces\Response_Handler as Response_Initializable;
 use XWP\Interfaces\Response_Modifier;
 
 /**
  * Performs the transformation of the raw response into a PSR-7 response.
  */
-class Response_Handler implements Response_Handler_Interface {
+class Response_Handler implements Response_Initializable {
     use Singleton;
 
     protected function __construct() {
