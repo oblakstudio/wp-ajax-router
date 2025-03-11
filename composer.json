@@ -14,7 +14,7 @@
     "automattic/jetpack-constants": "^2.0",
     "oblak/wp-polyfills": "^1.0",
     "sunrise/http-message": "^3",
-    "sunrise/http-router": "^2.16",
+    "sunrise/http-router": "^3.0",
     "x-wp/hook-invoker": "^1.0@alpha"
   },
   "require-dev": {
